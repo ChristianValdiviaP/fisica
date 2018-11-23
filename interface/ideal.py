@@ -1,6 +1,7 @@
 import tkinter as tk # ejecutar "sudo apt-get install python3-tk" si hay problemas con la importac
 from tkinter import ttk
 import numpy as np
+import math
 import matplotlib as mpl
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (
@@ -45,6 +46,7 @@ class Interface:
 
         def f_posicion_x0(event):
             print(posicion_x0.get())
+
 
         def f_posicion_y0(event):
             print(posicion_y0.get())
@@ -262,6 +264,7 @@ class Interface:
         pass
 
     def boton_alcance_horizontalf(self):
+
         pass
 
     def boton_altura_maximaf(self):
