@@ -3,12 +3,20 @@ from tkinter import ttk
 import numpy as np
 from numpy import *
 import matplotlib as mpl
+import matplotlib.pyplot as mpl
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import (
     FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 class Interface:
     def __init__(self):
+        # Valores Iniciales
+        self.gravedad = 9.8
+        self.velocidad_inicial = 10
+        self.angulo = np.radians(2)
+        self.x0 = 5
+        self.y0 = 8
+        self.z0 = 0
         self.window = tk.Tk()
         self.window.title("Fisica")
         self.window.minsize(800, 600)
@@ -33,6 +41,8 @@ class Interface:
         self.canvas = FigureCanvasTkAgg(self.figura, master=self.graphics)
         self.canvas.draw()
         self.canvas = self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
+
+
         # Inicializar los botones de la interfaz
         self.boton_posicion = ttk.Button(self.opciones, text="Posición", width=10, command=lambda: self.boton_posicionf())
         self.boton_velocidad = ttk.Button(self.opciones, text="Velocidad", width=10, command=lambda: self.boton_velocidadf())
@@ -207,7 +217,14 @@ class Interface:
         self.entrada_posicion_x0.insert(tk.END, self.entrada_posicion_x0.get())
     # Declaracion de botones0
     def boton_posicionf(self):
-        self.actualizar_grafico()
+        alcanze_horizontal = self.x0 + ((self.velocidad_inicial*sin(2*self.angulo))/(2*self.gravedad)) + \
+                             ((self.velocidad_inicial*cos(self.angulo)) /
+                              (self.gravedad))*sqrt(((self.velocidad_inicial*sin(self.angulo))**2) + 2*self.y0*self.gravedad)
+        x = linspace(0, alcanze_horizontal, 601)
+
+        ecuacion_parametrica_x = (self.x0 + self.velocidad_inicial*cos(self.angulo)*x)
+        ecuacion_parametrica_y = (self.y0 + self.velocidad_inicial*sin(self.angulo)*x-(self.gravedad/2)*x**2)
+        self.actualizar_grafico(ecuacion_parametrica_x,ecuacion_parametrica_y)
         # Metodo para almacenar datos de las entradas de datos
         def copiar_valores(event):
             self.tiempo_datos[0] = entrada_tiempo.get()
@@ -241,7 +258,7 @@ class Interface:
         frame_aceptar.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=5, pady=5)
 
         # Crea las titulos de la entrada de datos
-        tiempo =  ttk.Label(frame_abajo, text="Tiempo: ")
+        tiempo = ttk.Label(frame_abajo, text="Tiempo: ")
         aceptar = ttk.Button(frame_aceptar, text="ACEPTAR")
         tiempo_init = ttk.Label(frame_arriba, text="Intervalo de tiempo")
         tiempo_init_x = ttk.Entry(frame_arriba, state='readonly', justify='center')
@@ -278,7 +295,38 @@ class Interface:
         pass
 
     def boton_aceleracionf(self):
+        #pop up de ingreso de datos
 
+        Pop_Up = tk.Tk()
+        Pop_Up.title("Aceleracion")
+        Pop_Up.minsize(400,300)
+
+        label = tk.Label(Pop_Up)
+        label.pack()
+
+        button = ttk.Button(Pop_Up, text = 'Evaluar' , width = 10, command = Pop_Up.destroy)
+        button.pack(side=tk.BOTTOM)
+
+        # generamiento de la grafica
+
+        x = self.x0
+        
+        y = self.y0
+
+        mpl.plot(x , y, "g--")
+        mpl.show()
+
+        #ciclo de la ventana emergente
+        Pop_Up.mainloop()
+
+
+        #generacion del punto de posicion a medir
+
+
+        #generacion del vector con origen en el punto de posicion
+
+
+        #posible desplazamiento con deslizador
         pass
 
     def boton_alcance_horizontalf(self):
@@ -298,11 +346,10 @@ class Interface:
 
     def boton_vector_normalf(self):
         pass
-    def actualizar_grafico(self):
+    def actualizar_grafico(self,ecuacion_x,ecuacion_y):
         self.figura.clear() # Refresca el gráfico
-        x = linspace(-10, 3, 601)
-        y2 = -.5 * (x + 1) ** 2 + 2
-        self.figura.add_subplot(111).plot(x,y2, "--", linewidth=0.5)
+        self.figura.add_subplot(111).plot(ecuacion_x,ecuacion_y, "--")
+        # self.figura.add_subplot(111).plot(x0, y0, 'r.')
         self.figura.canvas.draw()
 
     #
